@@ -10,7 +10,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import *
-from linebot.models import PostbackAction,URIAction, MessageAction, TemplateSendMessage, ButtonsTemplate
+import re
 
 app = Flask(__name__)
 
@@ -37,7 +37,7 @@ line_bot_api.push_message('U49dc41cd7de29de6c36b346b105c0432', TemplateSendMessa
             URIAction(
                 lable='貓貓用品',
                 uri='https://chongwuyongpinzhuanmai.webnode.tw/%e8%b2%93%e5%92%aa%e7%94%a2%e5%93%81/'
-            ),
+            )
         ]
     )
 ))
