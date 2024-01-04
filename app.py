@@ -11,7 +11,6 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 import re
-
 app = Flask(__name__)
 
 # 必須放上自己的Channel Access Token
@@ -19,28 +18,7 @@ line_bot_api = LineBotApi('Zo7uhKbzTTn6wt3NGZlwKWl6XYumt0bUIEOmifQjMQnxByNCpS4xU
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('164a6d03a1c0aae498d8eae9a00e19c7')
 
-line_bot_api.push_message('U49dc41cd7de29de6c36b346b105c0432', TemplateSendMessage(
-    alt_text='ButtonsTemplate',
-    template=ButtonsTemplate(
-        thumbnail_image_url='https://i.imgur.com/ZHf1apg.jpg',
-        title='寵物用品公司',
-        text='寵物用品公司購買網站',
-        actions=[
-            URIAction(
-                lable='官方網站',
-                uri='https://chongwuyongpinzhuanmai.webnode.tw/'
-            ),
-            URIAction(
-                lable='狗狗用品',
-                uri='https://chongwuyongpinzhuanmai.webnode.tw/%e7%8b%97%e7%8b%97%e7%94%a2%e5%93%81/'
-            ),
-            URIAction(
-                lable='貓貓用品',
-                uri='https://chongwuyongpinzhuanmai.webnode.tw/%e8%b2%93%e5%92%aa%e7%94%a2%e5%93%81/'
-            )
-        ]
-    )
-))
+line_bot_api.push_message('U49dc41cd7de29de6c36b346b105c0432', TextSendMessage(text='你可以開始了'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -64,9 +42,33 @@ def callback():
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    message = TextSendMessage(text=message)
-    line_bot_api.reply_message(event.reply_token,message)
-
+    message = text=event.message.text
+    if re.match('更多資訊',message):
+        buttons_template_message = TemplateSendMessage(
+        alt_text='這是樣板傳送訊息',
+        template=ButtonsTemplate(
+            thumbnail_image_url='https://i.imgur.com/ZHf1apg.jpg',
+            title='寵物用品公司',
+            text='選單功能',
+            actions=[
+                URIAction(
+                    label='官方網站',
+                    uri='https://chongwuyongpinzhuanmai.webnode.tw/'
+                ),
+                URIAction(
+                    label='狗狗產品',
+                    uri='https://chongwuyongpinzhuanmai.webnode.tw/%e7%8b%97%e7%8b%97%e7%94%a2%e5%93%81/'
+                ),
+                URIAction(
+                    label='貓咪產品',
+                    uri='https://chongwuyongpinzhuanmai.webnode.tw/%e8%b2%93%e5%92%aa%e7%94%a2%e5%93%81/'
+                )
+            ]
+        )
+    )
+        line_bot_api.reply_message(event.reply_token, buttons_template_message)
+    else:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
 #主程式
 import os
 if __name__ == "__main__":
