@@ -18,7 +18,7 @@ line_bot_api = LineBotApi('Zo7uhKbzTTn6wt3NGZlwKWl6XYumt0bUIEOmifQjMQnxByNCpS4xU
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('164a6d03a1c0aae498d8eae9a00e19c7')
 
-line_bot_api.push_message('U49dc41cd7de29de6c36b346b105c0432', TextSendMessage(text='你可以開始了'))
+line_bot_api.push_message('U49dc41cd7de29de6c36b346b105c0432', TextSendMessage(text='您好，感謝使用寵物用品商店線上機器人，\n輸入下面指令可以使用本機器人的功能\n-----------------\n購買商品\n線上客服\n店家資訊'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -43,7 +43,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = text=event.message.text
-    if re.match('更多資訊',message):
+    if re.match('購買商品',message):
         buttons_template_message = TemplateSendMessage(
         alt_text='這是樣板傳送訊息',
         template=ButtonsTemplate(
@@ -67,6 +67,10 @@ def handle_message(event):
         )
     )
         line_bot_api.reply_message(event.reply_token, buttons_template_message)
+    elif re.match('線上客服',message):
+        line_bot_api.push_message('U49dc41cd7de29de6c36b346b105c0432', TextSendMessage(text='請稍等，以幫您聯絡客服人員。'))
+    elif re.match('店家資訊',message):
+        line_bot_api.push_message('U49dc41cd7de29de6c36b346b105c0432', TextSendMessage(text='寵物用品專賣門市\n台中市沙鹿區台灣大道七段200號, 433 台中市\n\n電話號碼\n04-26328001\n\n電子郵件\ns1091935@gm.pu.edu.tw\n\n服務時間\n星期一 ~ 星期五： 8:00 - 18:00\n假日：不營業\n特殊節日：另公告之'))
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
 #主程式
